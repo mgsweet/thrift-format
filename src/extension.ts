@@ -1,11 +1,9 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-const fs = require('fs');
-let thriftParser = require('thrift-parser');
-const vscode_1 = require("vscode");
-import * as t from '@byte-ferry/parser';
+import * as fs from 'fs';
+import * as ferryParser from '@byte-ferry/parser';
 import * as handler from './handler';
+
+let thriftParser = require('thrift-parser');
 
 
 // this method is called when your extension is activated
@@ -14,52 +12,52 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "ThriftFormat" is now active!');
+	console.log('Thrift Formatter is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('ThriftFormat.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		// 获取当前文件路径
-		let thriftFilePath = vscode.window.activeTextEditor?.document.fileName
-		if (thriftFilePath == null || thriftFilePath == "") {
-			vscode.window.showErrorMessage('没有选中thrift文件，格式化失败');
-			return
+	let disposable = vscode.commands.registerCommand('thriftfmt.fmt', () => {
+		let thriftFilePath = vscode.window.activeTextEditor?.document.fileName;
+		if (thriftFilePath === null || thriftFilePath === "") {
+			vscode.window.showErrorMessage('format fail, no thrift file selected');
+			return;
 		}
-		console.log(thriftFilePath)
-		// 读取文件内容
-		const thriftFileContent = fs.readFileSync(thriftFilePath, 'utf8');
-		let thriftContentArr: string = thriftFileContent.split("\n")
-		let contentArr: string[] = new Array()
-		// 解析thrift 语法
-		const document = t.parse(thriftFileContent);
-		console.log(document)
-		let contentData = new handler.ContentData()
+		
+		const thriftFileContent = fs.readFileSync(thriftFilePath!, 'utf8');
+
+		let thriftContentArr = thriftFileContent.split("\n");
+		
+		let contentArr: string[] = new Array();
+
+		// parse thrift
+		const document = ferryParser.parse(thriftFileContent);
+
+		let contentData = new handler.ContentData();
+
 		document.body.forEach(item => {
 			switch (item.type) {
-				case t.SyntaxType.StructDefinition:
+				case ferryParser.SyntaxType.StructDefinition:
 					let nodeData = new handler.NodeData()
 					nodeData.ContentArr = handler.StructHandler(item)
 					contentData.Structs.push(nodeData)
 					break;
-				case t.SyntaxType.NamespaceDefinition:
+				case ferryParser.SyntaxType.NamespaceDefinition:
 					let nodeDatan = new handler.NodeData()
 					nodeDatan.ContentArr = handler.namespaceHandler(item)
 					contentData.NameSpaces.push(nodeDatan)
 					break
-				case t.SyntaxType.EnumDefinition:
+				case ferryParser.SyntaxType.EnumDefinition:
 					let nodeDatae = new handler.NodeData()
 					nodeDatae.ContentArr = handler.enumHandler(item)
 					contentData.Enums.push(nodeDatae)
 					break;
-				case t.SyntaxType.IncludeDefinition:
+				case ferryParser.SyntaxType.IncludeDefinition:
 					let nodeDataI = new handler.NodeData()
 					nodeDataI.ContentArr = handler.includeHandler(item)
 					contentData.Includes.push(nodeDataI)
 					break
-				case t.SyntaxType.ServiceDefinition:
+				case ferryParser.SyntaxType.ServiceDefinition:
 					let nodeDataS = new handler.NodeData()
 					nodeDataS.ContentArr = handler.ServiceHandler(item)
 					contentData.Structs.push(nodeDataS)

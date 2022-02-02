@@ -1,12 +1,12 @@
 {
-  "name": "ThriftFormat",
-  "displayName": "thrift 格式化工具",
-  "description": "thrift 格式化工具",
-  "version": "0.0.2",
-  "publisher": "hbitmpcoder",
+  "name": "thriftfmt",
+  "displayName": "Thrift Formatter",
+  "description": "Thrift Formatter",
+  "version": "0.0.1",
+  "publisher": "mgsweet",
   "repository": {
     "type": "git",
-    "url": "https://github.com/HBITMP/thrift-format.git"
+    "url": "https://github.com/mgsweet/thrift-format.git"
   },
   "icon": "static/favicon.ico",
   "engines": {
@@ -22,13 +22,13 @@
   "contributes": {
     "commands": [
       {
-        "command": "ThriftFormat.helloWorld",
-        "title": "thrift format"
+        "command": "thriftfmt.fmt",
+        "title": "format thrift"
       }
     ],
     "keybindings": [
       {
-        "command": "ThriftFormat.helloWorld",
+        "command": "thriftfmt.fmt",
         "key": "ctrl+l",
         "mac": "cmd+l"
       }
