@@ -1,4 +1,4 @@
-# ThriftFormat README
+# Thrift Formatter
 
 一个thrift文件格式化工具
 
